@@ -2,31 +2,41 @@
 
 namespace App\Controller;
 
-use App\Model\GitHubApi;
+use App\Model\GithubFetcher;
+use App\Model\LanguageCalculator;
+use App\Model\GithubUserData;
 
 class HomeController
 {
-	public function index(): void
-	{
-		require_once __DIR__ . '/../View/home.php';
-	}
+    private GithubUserData $githubUserData;
 
-	public function generate(): void
-	{
-		$username = $_POST['username'] ?? null;
-		if (!$username) {
-			header('Location: /');
-			exit;
-		}
+    public function __construct()
+    {
+        $fetcher = new GithubFetcher();
+        $languageCalculator = new LanguageCalculator();
+        $this->githubUserData = new GithubUserData($fetcher, $languageCalculator);
+    }
 
-		$githubApi = new GitHubApi();
-		$data = $githubApi->getUserData($username);
+    public function index(): void
+    {
+        require_once __DIR__ . '/../View/home.php';
+    }
 
-		if (!$data) {
-			echo "User not found";
-			exit;
-		}
+    public function generate(): void
+    {
+        $username = $_POST['username'] ?? null;
+        if (!$username) {
+            header('Location: /');
+            exit;
+        }
 
-		require_once __DIR__ . '/../View/resume.php';
-	}
+        $data = $this->githubUserData->getUserData($username);
+
+        if (!$data) {
+            echo "User not found";
+            exit;
+        }
+
+        require_once __DIR__ . '/../View/resume.php';
+    }
 }
