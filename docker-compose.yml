@@ -8,3 +8,10 @@ services:
       - ./src:/var/www/html
     environment:
       - APACHE_DOCUMENT_ROOT=/var/www/html/public
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: >
+      /bin/bash -c "composer install && apache2-foreground"
+volumes: {}
