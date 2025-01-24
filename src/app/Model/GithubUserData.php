@@ -28,12 +28,12 @@ class GithubUserData
             return null;
         }
 
-        $repos = $this->fetcher->fetchRepositories($user['repos_url']);
-        $languages = $this->languageCalculator->calculate($repos);
+        $repositories = $this->fetcher->fetchRepositories($user['repos_url']);
+        $languages = $this->languageCalculator->calculate($repositories);
 
         return [
             'user' => $user,
-            'repositories' => $repos,
+            'repositories' => $repositories,
             'languages' => $languages,
         ];
     }

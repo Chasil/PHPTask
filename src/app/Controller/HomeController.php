@@ -26,15 +26,13 @@ class HomeController
     {
         $username = $_POST['username'] ?? null;
         if (!$username) {
-            header('Location: /');
-            exit;
+            throw new \InvalidArgumentException('Username is required');
         }
 
         $data = $this->githubUserData->getUserData($username);
 
         if (!$data) {
-            echo "User not found";
-            exit;
+            throw new \RuntimeException('User not found');
         }
 
         require_once __DIR__ . '/../View/resume.php';
